@@ -1,2 +1,3 @@
 # learning-vue
-vue 學習筆記與範例
+
+Vue.js 學習筆記與範例
