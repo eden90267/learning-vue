@@ -148,8 +148,8 @@
 </div>
 
 <div id="app">
-  <input type="text" class="form-control" v-model="text">
-  <button class="btn btn-primary mt-1">反轉字串</button>
+  <input type="text" class="form-control" @keyup.enter="reverseText" v-model="text">
+  <a v-bind:href="link" class="btn btn-primary mt-1" @click.prevent="reverseText">反轉字串</a>
   <div class="mt-3">
     {{ newText }}
   </div>
@@ -160,16 +160,23 @@ var app = new Vue({
   el: '#app',
   data: {
     text: '',
-    newText: ''
+    newText: '',
+    link: 'https://www.google.com.tw/'
   },
   // 請在此撰寫 JavaScript
   methods: {
     reverseText(event) {
+      // console.log(event);
+      // event.preventDefault(); // 修飾符就是可以不用加入這段
       this.newText = this.text.split('').reverse().join('');
     }
   }
 });
 </script>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+
 
 <!-- 解答：
 reverseText(event) {
