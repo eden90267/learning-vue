@@ -357,3 +357,108 @@ var app = new Vue({
 ```
 
 ## Vue 表單與資料的綁定
+
+```html
+<div id="app">
+  <h4>字串</h4>
+  {{ text }}
+  <input type="text" class="form-control" v-model="text">
+  <hr>
+  <pre>{{ textarea }}</pre>
+  <textarea cols="30" rows="3" class="form-control" v-model="textarea"></textarea>
+  <hr>
+  <h4>Checkbox 與 Radio</h4>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="check1" v-model="checkbox1">
+    <label class="form-check-label" for="check1"> 你要不要看電影 </label>
+  </div>
+  <hr>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="check2" v-model="checkboxArray" value="雞">
+    <label class="form-check-label" for="check2">雞</label>
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="check3" v-model="checkboxArray" value="豬">
+    <label class="form-check-label" for="check3">豬</label>
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="check4" v-model="checkboxArray" value="牛">
+    <label class="form-check-label" for="check4">牛</label>
+  </div>
+  <p>晚餐火鍋裡有 <span v-for="item in checkboxArray">{{item}}</span>。</p>
+  <hr>
+  <div class="form-check">
+    <input type="radio" class="form-check-input" v-model="singleRadio" id="radio2" value="雞">
+    <label class="form-check-label" for="radio2">雞</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" class="form-check-input" v-model="singleRadio" id="radio3" value="豬">
+    <label class="form-check-label" for="radio3">豬</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" class="form-check-input" v-model="singleRadio" id="radio4" value="牛">
+    <label class="form-check-label" for="radio4">牛</label>
+  </div>
+  <p>晚餐火鍋裡有 {{singleRadio}}。</p>
+  <hr>
+  <h4>Select</h4>
+  <select name="" id="" class="form-control" v-model="selected">
+    <option value="" disabled>-- 請選擇 --</option>
+    <option value="小明">小明</option>
+    <option value="小美">漂亮的小美</option>
+  </select>
+</div>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    text: '',
+    textarea: '',
+    checkbox1: false,
+    checkboxArray: [],
+    singleRadio: '',
+    selected: '',
+  },
+});
+</script>
+```
+
+## 元件基礎概念
+
+建立元件化讓狀態各自 Vue 管理而不會重複使用。
+
+```html
+<div id="app">
+  <div>
+    你已經點擊 <button class="btn btn-outline-secondary btn-sm" @click="counter += 1">{{ counter }}</button> 下。
+    <counter-component></counter-component>
+    <counter-component></counter-component>
+    <counter-component></counter-component>
+  </div>
+</div>
+
+<script>
+// 請在此撰寫 JavaScript
+Vue.component('counter-component', {
+  data: function () { // 建立元件就需要 data 回傳是 func
+    return {
+      counter: 0
+    }
+  },
+  template: `
+    <div>
+      <button class="btn btn-outline-secondary btn-sm" @click="counter += 1">{{ counter }}</button>
+    </div>
+  `
+});
+
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    counter: 0
+  },
+});
+</script>
+```
