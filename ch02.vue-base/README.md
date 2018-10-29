@@ -285,3 +285,75 @@ var app = new Vue({
 
 - v-bind 可審略
 - v-on 可改成 @
+
+## v-class 動態切換 className
+
+```html
+<div class="box" :class="{ '要加入的 ClassName' : 判斷式}"></div>
+```
+
+範例：
+
+```html
+<div id="app">
+  <div class="box" :class="{'rotate': isTransform}"></div>
+  <hr>
+  <button class="btn btn-outline-primary" @click="isTransform = !isTransform">選轉物件</button>
+</div>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    isTransform: false
+  },
+});
+</script>
+
+<style>
+.box {
+  transition: transform .5s;
+}
+.box.rotate {
+  transform: rotate(45deg)
+}
+</style>
+```
+
+## computed 運算功能
+
+- 將結果存到變數裡面，並且這變數是可以使用的
+- 所有在 computed 裡面的都是 function
+- 可運用於畫面之上
+- 有使用到 data 內的變數，會在 data 變數更動後觸發，反之不會
+
+以下範例：
+
+```html
+<div id="app">
+  <input type="text" class="form-control" v-model="text">
+  <button class="btn btn-primary mt-1">反轉字串</button>
+  <div class="mt-3">
+    {{ text }}
+  </div>
+  {{reverseText}}
+</div>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    text: '',
+    newText: ''
+  },
+  // 請在此撰寫 JavaScript
+  computed: {
+    reverseText: function () {
+      return this.text.split('').reverse().join('');
+    }
+  }
+});
+</script>
+```
+
+## Vue 表單與資料的綁定
