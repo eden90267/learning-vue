@@ -423,3 +423,166 @@ var app = new Vue({
 ```
 
 ## Computed 與 Watch
+
+- Computed：針對輸出到畫面的內容要多做一些處理 (省略過濾的按鈕)
+- Watch：監控特定的變數，該變數有變化會執行特定的事件
+
+以下範例：
+
+```html
+<div id="app">
+  <h4>Computed</h4>
+  <p>使用 Computed 來過濾資料。</p>
+  <input type="text" class="form-control" v-model="filterText">
+  <ul>
+    <li v-for="(item, key) in filterArray" :key="item.age">
+      {{ key }} - {{ item.name }} {{ item.age }} 歲 <input type="text">
+    </li>
+  </ul>
+  <p>使用 Computed 來呈現時間格式。</p>
+  <p>{{formatTime}}</p>
+  <h4>Watch</h4>
+  <p>使用 trigger 來觸發旋轉 box、並在三秒後改變回來</p>
+  <div class="box" :class="{'rotate': trigger }"></div>
+  <hr>
+  <button class="btn btn-outline-primary" @click="trigger = true;">Counter</button>
+</div>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    arrayData: [
+      {
+        name: '小明',
+        age: 16
+      },
+      {
+        name: '漂亮阿姨',
+        age: 24
+      },
+      {
+        name: '杰倫',
+        age: 20
+      }
+    ],
+    filterText: '',
+    trigger: false,
+    newDate: 0
+  },
+  computed: {
+    filterArray: function () {
+      var vm = this;
+      return vm.arrayData.filter(function (item) {
+        return item.name.match(vm.filterText);
+      });
+    },
+    formatTime: function () {
+      var dates = new Date(this.newDate * 1000);
+      var year = dates.getFullYear();
+      var month = dates.getMonth() + 1;
+      var date = dates.getDate() + 1;
+      var hours = dates.getHours();
+      var minutes = dates.getMinutes();
+      var seconds = dates.getSeconds();
+      return `${year}/${month}/${date} ${hours}:${minutes}:${seconds}`
+    }
+  },
+  watch: {
+    trigger: function () {
+      var vm = this;
+      setTimeout(function () {
+        vm.trigger = false;
+      }, 3000);
+    }
+  },
+  mounted: function () {
+    this.newDate = Math.floor(Date.now() / 1000);
+  }
+});
+</script>
+
+<style>
+.box {
+  transition: all .5s;
+}
+.box.rotate {
+  transform: rotate(45deg)
+}
+</style>
+```
+
+## 表單細節處理
+
+- true-value
+- false-value
+- v-model.lazy
+- v-model.number
+- v-model.trim
+
+以下範例：
+
+```html
+<div id="app">
+  <h4>Select</h4>
+  <select name="" id="" class="form-control" v-model="selected">
+    <option disabled value="">請選擇</option>
+    <option value="小美">小美</option>
+    <option value="可愛小妞">可愛小妞</option>
+    <option value="漂亮阿姨">漂亮阿姨</option>
+  </select>
+  <p>小明喜歡的女生是 {{ selected }}。</p>
+  <hr>
+  <select name="" id="" class="form-control" v-model="selected2">
+    <option disabled value="">請選擇</option>
+    <option :value="item" v-for="item in selectData">{{item}}</option>
+  </select>
+  <p>小明喜歡的女生是 {{ selected2 }}。</p>
+  <hr>
+  <h4 class="mt-3">多選</h4>
+  <select name="" id="" class="form-control" multiple v-model="multiSelected">
+    <option value="小美">小美</option>
+    <option value="可愛小妞">可愛小妞</option>
+    <option value="漂亮阿姨">漂亮阿姨</option>
+  </select>
+  <p>小明喜歡的女生是 <span v-for="item in multiSelected">{{ item }} </span>。</p>
+  <hr>
+  <h4 class="mt-3">複選框</h4>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="sex" v-model="sex" true-value="男生" false-value="女生">
+    <label class="form-check-label" for="sex">{{ sex }}</label>
+  </div>
+  <h4 class="mt-3">修飾符</h4>
+  {{ lazyMsg }}
+  <input type="text" class="form-control" v-model.lazy="lazyMsg">
+  <br>
+  <pre>{{ typeof(age) }} {{ age }}</pre>
+  <input type="number" class="form-control" v-model.number="age">
+  <br>
+  {{ trimMsg }}緊黏的文字
+  <input type="text" class="form-control" v-model.trim="trimMsg">
+</div>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    singleRadio: '',
+    selected: '',
+    selectData: ['小美', '可愛小妞', '漂亮阿姨'],
+    selected2: '',
+    multiSelected: [],
+    sex: '男生',
+
+    // 修飾符
+    lazyMsg: '',
+    age: '',
+    trimMsg: ''
+  },
+});
+</script>
+```
+
+## v-on 的頁面操作細節
+
+
