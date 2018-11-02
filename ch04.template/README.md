@@ -585,4 +585,203 @@ var app = new Vue({
 
 ## v-on 的頁面操作細節
 
+### 修飾符
 
+#### 事件修飾符
+
+- .stop - 調用 event.stopPropagation()。
+- .prevent - 調用 event.preventDefault()。
+- .capture - 添加事件偵聽器時使用 capture 模式。
+- .self - 只當事件是從偵聽器綁定的元素本身觸發時才觸發回調。
+- .once - 只觸發一次回調。
+
+```html
+<h6>將此範例加上 stopPropagation</h6>
+<div class="p-3 bg-primary" @click.stop="trigger('div')">
+  <span class="box" @click.stop="trigger('box')"></span>
+</div>
+
+<h6 class="mt-3">事件偵聽器時使用 capture 模式</h6>
+<div class="p-3 bg-primary" @click.capture="trigger('div')">
+  <span class="box d-flex align-items-center justify-content-center" @click.capture="trigger('box')">
+    <button class="btn btn-outline-secondary" @click.capture="trigger('button')">按我</button>
+  </span>
+</div>
+
+<h6 class="mt-3">事件偵聽器時使用 self 模式</h6>
+<div class="p-3 bg-primary" @click.self="trigger('div')">
+  <span class="box d-flex align-items-center justify-content-center" @click.self="trigger('box')">
+    <button class="btn btn-outline-secondary" @click.self="trigger('button')">按我</button>
+  </span>
+</div>
+
+<h6 class="mt-3">事件偵聽器只觸發一次</h6>
+<div class="p-3 bg-primary" @click.once="trigger('div')">
+  <span class="box d-flex align-items-center justify-content-center" @click.once="trigger('box')">
+    <button class="btn btn-outline-secondary" @click.once="trigger('button')">按我</button>
+  </span>
+</div>
+```
+
+#### 按鍵修飾符
+
+- `.{keyCode | keyAlias}` - 只當事件是從特定鍵觸發時才觸發回調。
+- 別名修飾 - .enter, .tab, .delete, .esc, .space, .up, .down, .left, .right
+- 修飾符來實現僅在按下相應按鍵時才觸發鼠標或鍵盤事件的監聽器 - .ctrl, .alt, .shift, .meta
+
+```html
+<h6 class="mt-3">keyCode</h6>
+<input type="text" class="form-control" v-model="text" @keyup.13="trigger(13)">
+
+<h6 class="mt-3">別名修飾</h6>
+<input type="text" class="form-control" v-model="text" @keyup.space="trigger('space')">
+
+<h6 class="mt-3">相應按鍵時才觸發的監聽器</h6>
+<input type="text" class="form-control" v-model="text" @keyup.shift.enter="trigger('shift + Enter')">
+```
+
+#### 滑鼠修飾符
+
+- .left - (2.2.0) 只當點擊鼠標左鍵時觸發。
+- .right - (2.2.0) 只當點擊鼠標右鍵時觸發。
+- .middle - (2.2.0) 只當點擊鼠標中鍵時觸發。
+
+```html
+<h6 class="mt-3">滑鼠修飾符</h6>
+<div class="p-3 bg-primary">
+  <span class="box" @click.left="trigger.left('Right button')">
+  </span>
+</div>
+```
+
+## template 作業
+
+- 將資料排序改為使用 computed 輸出
+- 使用迴圈的方式，重新依據點擊排序內容，並透過 computed 輸出
+- 反轉時，th 指標需給與正確方向
+- 加分題：第二次點擊時再次反轉資料
+
+```html
+<div id="app">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>品名</th>
+        <th class="click" @click="sort('price')">價格
+          <span class="icon" :class="{'inverse': !sortBy.reverse}" v-if="sortBy.field === 'price'">
+            <i class=" fas fa-angle-up text-success"></i>
+          </span>
+        </th>
+        <th class="click" @click="sort('expiryDate')">到期日
+          <span class="icon" :class="{'inverse': !sortBy.reverse}" v-if="sortBy.field === 'expiryDate'">
+            <i class=" fas fa-angle-up text-success"></i>
+          </span>
+        </th>
+      </tr>
+      <tr v-for="item in sortedData">
+        <td>{{ item.name }}</td>
+        <td>{{ item.price }}</td>
+        <td>{{ item.expiryDate }}</td>
+      </tr>
+    </thead>
+  </table>
+</div>
+
+<script>
+// 參考語法
+// // 使用 Sort 排序資料
+// data = data.sort(function (a, b) {
+//   // 抓出排序資料的值
+//   a = a[欄位]
+//   b = b[欄位]
+
+//   // 回傳 1, 0, -1 來進行排列
+//   // 詳細規則可參考 https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+//   return (a === b ? 0 : a > b ? 1 : -1) * 正反排序數值
+// })
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    data: [
+      {
+        name: '巧呼呼蘇打水',
+        price: 30,
+        expiryDate: 90
+      },
+      {
+        name: '心驚膽跳羊肉飯',
+        price: 65,
+        expiryDate: 2
+      },
+      {
+        name: '郭師傅武功麵包',
+        price: 32,
+        expiryDate: 1
+      },
+      {
+        name: '不太會過期的新鮮牛奶',
+        price: 75,
+        expiryDate: 600
+      },
+      {
+        name: '金殺 巧粒粒',
+        price: 120,
+        expiryDate: 200
+      }
+    ],
+    sortBy: {
+      field: 'price',
+      reverse: false
+    },
+  },
+  // 請在此撰寫 JavaScript
+  computed: {
+    sortedData: function () {
+      var vm = this;
+      return vm.data.sort(function (a, b) {
+        if (vm.sortBy.field === 'price') {
+          return !vm.sortBy.reverse ? a.price - b.price : b.price - a.price;
+        } else if (vm.sortBy.field === 'expiryDate') {
+          return !vm.sortBy.reverse ? a.expiryDate - b.expiryDate : b.expiryDate - a.expiryDate;
+        }
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+  },
+  methods: {
+    sort: function (field) {
+      if (this.sortBy.field !== field) {
+        this.sortBy.reverse = false;
+      } else {
+        this.sortBy.reverse = !this.sortBy.reverse;
+      }
+      this.sortBy.field = field;
+    }
+  }
+});
+</script>
+
+<style>
+.table th.click {
+  cursor: pointer;
+}
+
+.table th.click {
+  cursor: pointer;
+}
+
+.icon {
+  display: inline-block;
+}
+.icon.inverse {
+  transform: rotate(180deg)
+}
+</style>
+```
