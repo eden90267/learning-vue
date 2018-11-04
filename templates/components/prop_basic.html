@@ -120,11 +120,17 @@
   </ol>
 </div>
 
+
+
+
+
+
+
 <div id="app">
   <h2>靜態傳遞</h2>
-  <photo></photo>
+  <photo img-url="https://images.unsplash.com/photo-1520681080137-2ba442993dd4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f9d2aebc72c11a9d5bcbcd66e6ca8cb2&auto=format&fit=crop&w=1350&q=80"></photo>
   <h2>動態傳遞</h2>
-  <photo></photo>
+  <photo :img-url="url"></photo>
 </div>
 
 <script type="text/x-template" id="photo">
@@ -137,7 +143,8 @@
 <script>
 Vue.component('photo', {
   // 同學請依據課程內容，自行填寫 Props 的寫法
-  template: '#photo'
+  template: '#photo',
+  props: ['imgUrl']
 })
 
 var app = new Vue({
