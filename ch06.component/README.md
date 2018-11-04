@@ -163,3 +163,124 @@ var app = new Vue({
 });
 </script>
 ```
+
+## props 使用上的注意事項
+
+- 單向數據流
+  - 傳進來的 props 使用 v-model
+- 資料傳入有時間差，譬如 ajax，子元件使用 props 會跳出 undefined
+  - 可運用 v-if 讓元件的產生往後移，與資料完成一起同步繪製
+- 物件有傳參考的特性
+- `<keep-alive>`
+
+使用範例：
+
+```html
+<div id="app">
+  <h2>單向數據流</h2>
+  <photo :img-url="url"></photo>
+  <p>修正單向數據流所造成的錯誤</p>
+
+  <h2 class="mt-3">物件傳參考特性 及 尚未宣告的變數</h2>
+  <div class="row">
+    <div class="col-sm-4">
+      <card :user-data="user" v-if="user.phone"></card>
+    </div>
+  </div>
+
+  <h2 class="mt-3">維持狀態與生命週期</h2>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="isShow" v-model="isShow">
+    <label class="form-check-label" for="isShow">Check me out</label>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <keep-alive>
+        <keep-card v-if="isShow">
+        </keep-card>
+      </keep-alive>
+    </div>
+  </div>
+</div>
+
+<script type="text/x-template" id="photo">
+<div>
+  <img :src="imgUrl" class="img-fluid" alt="" />
+  <input type="text" class="form-control" v-model="newUrl">
+</div>
+</script>
+
+
+<script type="text/x-template" id="card">
+<div class="card">
+  <img class="card-img-top" :src="user.picture.large" alt="Card image cap" v-if="user.picture">
+  <div class="card-body">
+    <h5 class="card-title" v-if="user.name">{{ user.name.first }} {{ user.name.last }}</h5>
+    <p class="card-text">{{ user.email }}</p>
+  </div>
+  <div class="card-footer">
+    <input type="email" class="form-control" v-model="user.email">
+  </div>
+</div>
+</script>
+
+<script>
+Vue.component('photo', {
+  props: ['imgUrl'],
+  template: '#photo',
+  data: function () {
+    return {
+      newUrl: this.imgUrl
+    }
+  }
+})
+
+Vue.component('card', {
+  props: ['userData'],
+  template: '#card',
+  data: function () {
+    return {
+      user: this.userData
+    }
+  }
+});
+
+Vue.component('keepCard', {
+  template: '#card',
+  data: function() {
+    return {
+      user: {}
+    }
+  },
+  created: function() {
+    var vm = this;
+    $.ajax({
+      url: 'https://randomuser.me/api/',
+      dataType: 'json',
+      success: function(data) {
+        vm.user = data.results[0];
+      }
+    });
+  }
+});
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    user: {},
+    url: 'https://images.unsplash.com/photo-1522204538344-922f76ecc041?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=50e38600a12d623a878983fc5524423f&auto=format&fit=crop&w=1351&q=80',
+    isShow: true 
+  },
+  created: function() {
+    var vm = this;
+    $.ajax({
+      url: 'https://randomuser.me/api/',
+      dataType: 'json',
+      success: function(data) {
+        vm.user = data.results[0];
+      }
+    });
+  }
+});
+</script>
+```
