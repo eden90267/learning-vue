@@ -167,7 +167,7 @@ var app = new Vue({
 ## props 使用上的注意事項
 
 - 單向數據流
-  - 傳進來的 props 使用 v-model
+  - 傳進來的 props 使用 v-model 會有 console warning
 - 資料傳入有時間差，譬如 ajax，子元件使用 props 會跳出 undefined
   - 可運用 v-if 讓元件的產生往後移，與資料完成一起同步繪製
 - 物件有傳參考的特性
