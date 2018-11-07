@@ -284,3 +284,101 @@ var app = new Vue({
 });
 </script>
 ```
+
+## props 型別與預設值
+
+- 有 props 型別傳遞限制與預設值的要求，可透過 props 設定 type 與 default
+- 靜態屬性傳入的都會是字串，動態的話則會有所不同 (e.g. number)
+
+使用範例：
+
+```html
+<div id="app">
+  <h2>Props 的型別</h2>
+  <prop-type></prop-type>
+
+  <h2 class="mt-3">靜態與動態傳入數值差異</h2>
+  <prop-type :cash="300"></prop-type>
+</div>
+
+<script type="text/x-template" id="propType">
+<div>
+  <input type="number" class="form-control" v-model="newCash">
+  {{ typeof(cash)}}
+</div>
+</script>
+
+<script>
+Vue.component('prop-type', {
+  props: {
+    cash: {
+      type: Number,
+      default: 300
+    }
+  },
+  template: '#propType',
+  data: function() {
+    return {
+      newCash: this.cash
+    }
+  }
+});
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    cash: 300
+  }
+});
+</script>
+```
+
+## emit 向外層傳遞事件
+
+有時候還是不免於要修改到外層資料，就會有像外層傳遞事件的需求
+
+```html
+<div id="app">
+  <h2>透過 emit 向外傳遞資訊</h2>
+  我透過元件儲值了 {{ cash }} 元
+  <button class="btn btn-primary" v-on:click="incrementTotal(1)">按我</button>
+  <button-counter v-on:increment="incrementTotal"></button-counter>
+  <hr>
+  <button-counter></button-counter>
+</div>
+
+<script>
+Vue.component('buttonCounter', {
+  template: `<div>
+    <button @click="incrementCounter" class="btn btn-outline-primary">增加 {{ counter }} 元</button>
+    <input type="number" class="form-control mt-2" v-model="counter">
+  </div>`,
+  data: function() {
+    return {
+      counter: 1
+    }
+  },
+  methods: {
+    incrementCounter: function () {
+      this.$emit('increment', Number(this.counter));
+    }
+  }
+});
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    cash: 300
+  },
+  methods: {
+    incrementTotal: function (newNumber) {
+      this.cash = this.cash + newNumber;
+    }
+  }
+});
+</script>
+```
+
+## 元件插槽
+
+要替換元件內的部分內容
