@@ -127,50 +127,76 @@
   </ol>
 </div>
 
+
+
+
+
+
+
 <div id="app">
   <select name="" id="" class="form-control mb-3">
     <option value="">--- 請選擇城市 ---</option>
+    <option :value="option" v-for="option in options">{{option}}</option>
   </select>
   <div>
     <h4>關注城市</h4>
     <div class="card-columns">
-      <div class="card status-aqi2">
-        <div class="card-header">苗栗縣 - 三義
+      <card custom-class="status-aqi2">
+        <template slot="header">
+          苗栗縣 - 三義
           <a href="#" class="float-right"><i class="fas fa-star"></i></a>
-        </div>
-        <div class="card-body">
+        </template>
+        <Template slot="body">
           <ul class="list-unstyled">
             <li>AQI 指數: 54</li>
             <li>PM2.5: 8</li>
             <li>說明: 普通</li>
           </ul>
           2018-05-20 16:00
-        </div>
-      </div>
+        </Template>
+      </card>
     </div>
   </div>
   
   <hr>
   <div class="card-columns">
-    <div class="card status-aqi2">
-      <div class="card-header">苗栗縣 - 三義
+    <card custom-class="status-aqi2">
+      <template slot="header">
+        苗栗縣 - 三義
         <a href="#" class="float-right"><i class="far fa-star"></i></a>
-      </div>
-      <div class="card-body">
+      </template>
+      <template slot="body">
         <ul class="list-unstyled">
           <li>AQI 指數: 54</li>
           <li>PM2.5: 8</li>
           <li>說明: 普通</li>
         </ul>
-      2018-05-20 16:00
-      </div>
-    </div>
+        2018-05-20 16:00
+      </template>
+    </card>
   </div>
 </div>
+
+<script type="text/x-template" id="cardTemplate">
+  <div class="card" :class="[customClass]">
+    <div class="card-header">
+      <slot name="header"></slot>
+      <!--<a href="#" class="float-right"><i class="fa-star" v-class="{'fas': star, 'far': !star}"></i></a>-->
+    </div>
+    <div class="card-body">
+      <slot name="body"></slot>
+    </div>
+  </div>
+</script>
 
 <script>
 // API 來源
 // https://opendata.epa.gov.tw/Data/Contents/AQI/
+
+Vue.component('card', {
+  template: '#cardTemplate',
+  props: ['customClass', 'star']
+});
 
 var app = new Vue({
   el: '#app',
@@ -189,10 +215,33 @@ var app = new Vue({
       // 使用 jQuery ajax
       $.get(api).then(function( response ) {
         vm.data = response;
-        console.log(response)
+        vm.data.map(function (item) {
+          return {star: false, ...item};
+        })
       });
     },
-  }
+  },
+  computed: {
+    options: function () {
+      const counties = this.data.map(function (item) {
+        return item.County;
+      });
+      return [...new Set(counties)];
+    },
+    starData: function () {
+      return this.data.filter(function (item) {
+        return item.star
+      });
+    },
+    unstarData: function () {
+      return this.data.filter(function (item) {
+        return !item.star
+      });
+    },
+  },
+  mounted() {
+    this.getData();
+  },
 });
 </script>
 <!-- 

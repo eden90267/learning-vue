@@ -381,4 +381,164 @@ var app = new Vue({
 
 ## 元件插槽
 
-要替換元件內的部分內容
+- 要替換元件內的部分內容，非整個元件拿來用，透過參數來傳模板會比較不容易，所以 Vue 有元件插槽 Slot 供使用
+- 使用 `<slot></slot>` 標籤
+- 可指定 name 來做具名的 multiple 替換
+
+使用範例：
+
+```html
+<div id="app">
+  <h2>沒有插槽可替換的狀態</h2>
+  <no-slot-component>
+    <p>這是一段另外插入的內容</p>
+  </no-slot-component>
+
+  <h2>Slot 基礎範例</h2>
+  <single-slot-component>
+  </single-slot-component>
+  <single-slot-component>
+    <p>使用這段取代原本的 Slot。</p>
+  </single-slot-component>
+
+  <h2>具名插槽</h2>
+  <named-slot-component>
+  </named-slot-component>
+
+  <named-slot-component>
+    <header slot="header">替換的 Header</header>
+    <template slot="footer">替換的 Footer</template>
+    <template slot="btn">按鈕內容</template>
+    <p>其餘的內容</p>
+  </named-slot-component>
+</div>
+
+<script type="text/x-template" id="noSlotComponent">
+<div class="alert alert-warning">
+  <h6>我是一個元件</h6>
+  <p>
+    這沒有插槽。
+  </p>
+</div>
+</script>
+
+<script type="text/x-template" id="singleSlotComponent">
+<div class="alert alert-warning">
+  <h6>我是一個元件</h6>
+  <slot>
+    如果沒有內容，則會顯示此段落。
+  </slot>
+</div>
+</script>
+
+<script type="text/x-template" id="namedSlotComponent">
+<div class="card my-3">
+  <div class="card-header">
+    <slot name="header">這段是預設的文字</slot>
+  </div>
+  <div class="card-body">
+    <slot>
+      <h5 class="card-title">Special title treatment</h5>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+    </slot>
+    <a href="#" class="btn btn-primary">
+      <slot name="btn">spanGo somewhere</slot>
+    </a>
+  </div>
+  <div class="card-footer">
+    <slot name="footer">這是預設的 Footer</slot>
+  </div>
+</div>
+</script>
+
+<script>
+Vue.component('no-slot-component', {
+  template: '#noSlotComponent',
+});
+
+Vue.component('single-slot-component', {
+  template: '#singleSlotComponent',
+});
+
+Vue.component('named-slot-component', {
+  template: '#namedSlotComponent',
+});
+
+var app = new Vue({
+  el: '#app',
+  data: {}
+});
+</script>
+```
+
+## 使用 is 動態切換元件
+
+- 可透過 is 屬性指定元件
+- 某些狀況可取代 `v-if`
+
+使用範例：
+
+```html
+<div id="app">
+  <h2>使用 is 顯示單一組件</h2>
+  <primary-component :data="item"></primary-component>
+  <div is="primary-component" :data="item"></div>
+
+  <h2 class="mt-3">使用 is 動態切換組件</h2>
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link" :class="{'active': current == 'primary-component'}" href="#" @click.prevent="current = 'primary-component'">藍綠色元件</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" :class="{'active': current == 'danger-component'}" href="#" @click.prevent="current = 'danger-component'">紅色元件</a>
+    </li>
+  </ul>
+  <div class="mt-3">
+    <!--<primary-component :data="item" v-if="current === 'primary-component'"></primary-component>-->
+    <!--<danger-component :data="item" v-if="current === 'danger-component'"></danger-component>-->
+    <div :is="current" :data="item"></div>
+  </div>
+</div>
+
+<script type="text/x-template" id="primaryComponent">
+<div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+  <div class="card-header">{{ data.header }}</div>
+  <div class="card-body">
+    <h5 class="card-title">{{ data.title }}</h5>
+    <p class="card-text">{{ data.text }}</p>
+  </div>
+</div>
+</script>
+<script type="text/x-template" id="dangerComponent">
+<div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+  <div class="card-header">{{ data.header }}</div>
+  <div class="card-body">
+    <h5 class="card-title">{{ data.title }}</h5>
+    <p class="card-text">{{ data.text }}</p>
+  </div>
+</div>
+</script>
+
+<script>
+Vue.component('primary-component', {
+  props: ['data'],
+  template: '#primaryComponent',
+});
+Vue.component('danger-component', {
+  props: ['data'],
+  template: '#dangerComponent',
+});
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    item: {
+      header: '這裡是 header',
+      title: '這裡是 title',
+      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim perferendis illo reprehenderit ex natus earum explicabo modi voluptas cupiditate aperiam, quasi quisquam mollitia velit ut odio vitae atque incidunt minus?'
+    },
+    current: 'primary-component'
+  }
+});
+</script>
+```
