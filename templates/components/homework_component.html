@@ -11,7 +11,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>    <script src="/javascripts/vendor.js"></script>
 
   </head>
-  
+
   <body class="bg-lighter">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="/">Vue.js 練習手冊</a>
@@ -35,85 +35,85 @@
       <li class="nav-item">
         <a class="nav-link" href="/es6/let_const.html">ES6</a>
       </li>
-      
+
     </ul>
   </div>
 </nav>
     <div class="container my-5">
       <div class="row">
-        
+
           <div class="col-md-3">
-            
+
 <div>
   <h6 class="text-capitalize text-muted">components</h6>
-  
-    
+
+
       <a href="/components/basic.html"  class="btn btn-block btn-link">
         基礎元件
       </a>
-    
-  
-    
+
+
+
       <a href="/components/function_return.html"  class="btn btn-block btn-link">
         元件必須使用 function return
       </a>
-    
-  
-    
+
+
+
       <a href="/components/prop_basic.html"  class="btn btn-block btn-link">
         由外到內的資料傳遞
       </a>
-    
-  
-    
+
+
+
       <a href="/components/prop_adv.html"  class="btn btn-block btn-link">
         Props 注意事項
       </a>
-    
-  
-    
+
+
+
       <a href="/components/prop_type.html"  class="btn btn-block btn-link">
         Props 的型別
       </a>
-    
-  
-    
+
+
+
       <a href="/components/emit.html"  class="btn btn-block btn-link">
         向外層傳送事件(Data)
       </a>
-    
-  
-    
+
+
+
       <a href="/components/slot.html"  class="btn btn-block btn-link">
         Slot 插槽替換
       </a>
-    
-  
-    
+
+
+
       <a href="/components/is.html"  class="btn btn-block btn-link">
         動態組建切換
       </a>
-    
-  
-    
+
+
+
       <a href="/components/eventbus.html"  class="btn btn-block btn-link">
         Event Bus
       </a>
-    
-  
-    
+
+
+
       <a href="/components/homework_component.html"  class="btn btn-block btn-primary active">
         作業練習：元件變換
       </a>
-    
-  
+
+
 </div>
           </div>
-        
-        <div class="col-md-9 post">      
+
+        <div class="col-md-9 post">
           <!-- 練習開始 -->
           <h1 class="mt-0 text-muted">作業練習：元件變換</h1>
-          
+
 <h3>模板練習作業：Ajax 資料內容呈現</h3>
 <p>本作業一定要用到元件。</p>
 <div class="alert alert-secondary">
@@ -141,38 +141,38 @@
   <div>
     <h4>關注城市</h4>
     <div class="card-columns">
-      <card custom-class="status-aqi2">
+      <card :custom-class="statusClass(item.Status)" v-for="item in starData" :key="item.SiteName + item.County">
         <template slot="header">
-          苗栗縣 - 三義
-          <a href="#" class="float-right"><i class="fas fa-star"></i></a>
+          {{item.County}} - {{item.SiteName}}
+          <a href="#" class="float-right" @click.prevent="onUnstar(item)"><i class="fas fa-star"></i></a>
         </template>
         <Template slot="body">
           <ul class="list-unstyled">
-            <li>AQI 指數: 54</li>
-            <li>PM2.5: 8</li>
-            <li>說明: 普通</li>
+            <li>AQI 指數: {{item.AQI}}</li>
+            <li>PM2.5: {{item['PM2.5']}}</li>
+            <li>說明: {{item.Status}}</li>
           </ul>
-          2018-05-20 16:00
+          {{item.PublishTime}}
         </Template>
       </card>
     </div>
   </div>
-  
+
   <hr>
   <div class="card-columns">
-    <card custom-class="status-aqi2">
+    <card :custom-class="statusClass(item.Status)" v-for="item in unstarData" :key="item.SiteName + item.County">
       <template slot="header">
-        苗栗縣 - 三義
-        <a href="#" class="float-right"><i class="far fa-star"></i></a>
+        {{item.County}} - {{item.SiteName}}
+        <a href="#" class="float-right" @click.prevent="onStar(item)"><i class="far fa-star"></i></a>
       </template>
-      <template slot="body">
+      <Template slot="body">
         <ul class="list-unstyled">
-          <li>AQI 指數: 54</li>
-          <li>PM2.5: 8</li>
-          <li>說明: 普通</li>
+          <li>AQI 指數: {{item.AQI}}</li>
+          <li>PM2.5: {{item['PM2.5']}}</li>
+          <li>說明: {{item.Status}}</li>
         </ul>
-        2018-05-20 16:00
-      </template>
+        {{item.PublishTime}}
+      </Template>
     </card>
   </div>
 </div>
@@ -181,7 +181,6 @@
   <div class="card" :class="[customClass]">
     <div class="card-header">
       <slot name="header"></slot>
-      <!--<a href="#" class="float-right"><i class="fa-star" v-class="{'fas': star, 'far': !star}"></i></a>-->
     </div>
     <div class="card-body">
       <slot name="body"></slot>
@@ -220,6 +219,36 @@ var app = new Vue({
         })
       });
     },
+    onStar(item) {
+      const index = this.data.findIndex(function (each) {
+        return item.SiteName === each.SiteName
+      });
+      Vue.set(this.data, index, {...item, star: true})
+    },
+    onUnstar(item) {
+      const index = this.data.findIndex(function (each) {
+        return item.SiteName === each.SiteName && item.County === each.County;
+      });
+      Vue.set(this.data, index, {...item, star: false})
+    },
+    statusClass: function (status) {
+      switch (status) {
+        case '良好':
+          return '';
+        case '普通':
+          return 'status-aqi2';
+        case '對敏感族群不健康':
+          return 'status-aqi3';
+        case '對所有族群不健康':
+          return 'status-aqi4';
+        case '非常不健康':
+          return 'status-aqi5';
+        case '危害':
+          return 'status-aqi6';
+        default:
+          return '';
+      }
+    },
   },
   computed: {
     options: function () {
@@ -237,14 +266,14 @@ var app = new Vue({
       return this.data.filter(function (item) {
         return !item.star
       });
-    },
+    }
   },
   mounted() {
     this.getData();
   },
 });
 </script>
-<!-- 
+<!--
 狀態對應表
 '良好',
 'status-aqi2' '普通',
@@ -252,7 +281,7 @@ var app = new Vue({
 'status-aqi4' '對所有族群不健康',
 'status-aqi5' '非常不健康',
 'status-aqi6' '危害'
---> 
+-->
 <style>
 .status-aqi2 {
   background-color: #ffff00;
@@ -271,7 +300,7 @@ var app = new Vue({
 }
 </style>
 
- 
+
         </div>
       </div>
     </div>
