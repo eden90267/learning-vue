@@ -11,7 +11,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>    <script src="/javascripts/vendor.js"></script>
 
   </head>
-  
+
   <body class="bg-lighter">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="/">Vue.js 練習手冊</a>
@@ -35,74 +35,81 @@
       <li class="nav-item">
         <a class="nav-link" href="/es6/let_const.html">ES6</a>
       </li>
-      
+
     </ul>
   </div>
 </nav>
     <div class="container my-5">
       <div class="row">
-        
+
           <div class="col-md-3">
-            
+
 <div>
   <h6 class="text-capitalize text-muted">api</h6>
-  
-    
+
+
       <a href="/api/vue_set.html"  class="btn btn-block btn-link">
         Vue 的資料與 Set
       </a>
-    
-  
-    
+
+
+
       <a href="/api/filter.html"  class="btn btn-block btn-link">
         Vue Filter
       </a>
-    
-  
-    
+
+
+
       <a href="/api/extend.html"  class="btn btn-block btn-primary active">
         Vue Extend
       </a>
-    
-  
-    
+
+
+
       <a href="/api/mixin.html"  class="btn btn-block btn-link">
         Vue Mixins
       </a>
-    
-  
-    
+
+
+
       <a href="/api/directive.html"  class="btn btn-block btn-link">
         自定義指令
       </a>
-    
-  
-    
+
+
+
       <a href="/api/use.html"  class="btn btn-block btn-link">
         使用外部套件
       </a>
-    
-  
+
+
 </div>
           </div>
-        
-        <div class="col-md-9 post">      
+
+        <div class="col-md-9 post">
           <!-- 練習開始 -->
           <h1 class="mt-0 text-muted">Extend</h1>
-          
+
 <div class="alert alert-secondary">
   <ol class="mb-0">
     <li>請跟隨課程完成此章節。</li>
   </ol>
 </div>
 
+
+
+
+
+
+
+
 <div id="app">
   <table class="table">
     <tbody>
-      <tr is="row-component-one" v-for="(item, key) in data" 
+      <tr is="row-component-one" v-for="(item, key) in data"
         v-if="key % 2"
         :item="item" :key="key"></tr>
-      <tr is="row-component-two" v-for="(item, key) in data" 
+      <tr is="row-component-two" v-for="(item, key) in data"
         v-if="(key - 1) % 2"
         :item="item" :key="key"></tr>
     </tbody>
@@ -127,10 +134,7 @@
 
 <script>
 // extend 是基礎建構的概念
-// var newExtend = Vue.extend()
-
-var childOne = {
-  props: ['item'],
+var newExtend = Vue.extend({
   data: function() {
     return {
       data: {},
@@ -144,36 +148,32 @@ var childOne = {
     },
     currency: function(n) {
       return n.toFixed(2).replace(/./g, function(c, i, a) {
-          return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+        return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
       });
     }
   },
   mounted: function() {
     console.log('Extend:', this)
   }
+})
+
+var childOne = {
+  props: ['item'],
+  extends: newExtend,
 }
 
 var childTwo = {
   props: ['item'],
   data: function() {
     return {
-      data: {},
-      extendData: '這段文字是 extend 得到'
+      childTwo: '元件 2', // 不僅有原本的資料，還可以多新的，不會取代掉
+      extendData: '這段文字是 元件 得到', // 這個則會複寫掉
     }
   },
   template: '#row-component-two',
-  filters: {
-    dollarSign: function (n) {
-      return `$ ${n}`
-    },
-    currency: function(n) {
-      return n.toFixed(2).replace(/./g, function(c, i, a) {
-          return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
-      });
-    }
-  },
-  mounted: function() {
-    console.log('Extend:', this)
+  extends: newExtend,
+  mounted: function () { // 執行兩次
+    console.log('childTwo');
   }
 }
 
@@ -213,7 +213,7 @@ var app = new Vue({
 });
 </script>
 
-<!-- 
+<!--
 var newExtend = Vue.extend({
   data: function() {
     return {
@@ -290,7 +290,7 @@ var app = new Vue({
     console.log('Vue init:', this)
   }
 });
---> 
+-->
         </div>
       </div>
     </div>
