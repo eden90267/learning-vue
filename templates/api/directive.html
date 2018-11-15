@@ -11,7 +11,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>    <script src="/javascripts/vendor.js"></script>
 
   </head>
-  
+
   <body class="bg-lighter">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="/">Vue.js 練習手冊</a>
@@ -35,69 +35,77 @@
       <li class="nav-item">
         <a class="nav-link" href="/es6/let_const.html">ES6</a>
       </li>
-      
+
     </ul>
   </div>
 </nav>
     <div class="container my-5">
       <div class="row">
-        
+
           <div class="col-md-3">
-            
+
 <div>
   <h6 class="text-capitalize text-muted">api</h6>
-  
-    
+
+
       <a href="/api/vue_set.html"  class="btn btn-block btn-link">
         Vue 的資料與 Set
       </a>
-    
-  
-    
+
+
+
       <a href="/api/filter.html"  class="btn btn-block btn-link">
         Vue Filter
       </a>
-    
-  
-    
+
+
+
       <a href="/api/extend.html"  class="btn btn-block btn-link">
         Vue Extend
       </a>
-    
-  
-    
+
+
+
       <a href="/api/mixin.html"  class="btn btn-block btn-link">
         Vue Mixins
       </a>
-    
-  
-    
+
+
+
       <a href="/api/directive.html"  class="btn btn-block btn-primary active">
         自定義指令
       </a>
-    
-  
-    
+
+
+
       <a href="/api/use.html"  class="btn btn-block btn-link">
         使用外部套件
       </a>
-    
-  
+
+
 </div>
           </div>
-        
-        <div class="col-md-9 post">      
+
+        <div class="col-md-9 post">
           <!-- 練習開始 -->
           <h1 class="mt-0 text-muted">自定義指令</h1>
-          
+
 <div class="alert alert-secondary">
   <ol class="mb-0">
     <li>請跟隨課程完成此章節。</li>
   </ol>
 </div>
 
+
+
+
+
+
+
+
+
 <div id="app">
-  <input type="email" v-model="email" v-focus v-validator="{ className: 'form-control' }">
+  <input type="email" v-model="email" v-focus v-validation="{className: 'form-control'}">
 </div>
 
 <script>
@@ -106,7 +114,32 @@ Vue.directive('focus', {
   inserted: function(el) {
     el.focus()
   }
-})
+});
+
+Vue.directive('validation', {
+  bind: function (el, binding, vnode) { // binding 是 directive 自帶的屬性 // vnode 是 Vue 的虛擬節點
+    el.className = binding.value.className;
+
+    // v-model
+    // v-model 值
+    var vModel = vnode.data.directives.find(function (item) {
+      return item.name === 'model'
+    }).expression;
+    console.log('vModel', vModel);
+    var value = vnode.context[vModel];
+    console.log('value', value);
+  },
+  update: function (el, binding, vnode) {
+    var value = el.value;
+    var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    console.log(value, re.test(value));
+    if (!re.test(value)) {
+      el.className = 'form-control is-invalid';
+    } else {
+      el.className = 'form-control is-valid';
+    }
+  }
+});
 
 Vue.directive('validator', {
   update: function(el, binding, vnode) {
@@ -116,7 +149,7 @@ Vue.directive('validator', {
     var currentModel = vnode.data.directives.find(function(o) {
         return o.name === 'model';
     }).expression;
-    
+
     // 從當前 Model 取值
     var value = vnode.context[currentModel];
 
@@ -149,7 +182,7 @@ Vue.directive('validator', {
 var app = new Vue({
   el: '#app',
   data: {
-    email: 'aaa',
+    email: 'ddd@dads.com',
   },
   mounted: function() {
     console.log('Vue init:', this)
@@ -157,7 +190,7 @@ var app = new Vue({
 });
 </script>
 
-<!-- 
+<!--
 Vue.directive('focus', {
   inserted: function(el) {
     el.focus()
@@ -172,7 +205,7 @@ Vue.directive('validator', {
     var currentModel = vnode.data.directives.find(function(o) {
         return o.name === 'model';
     }).expression;
-    
+
     // 從當前 Model 取值
     var value = vnode.context[currentModel];
 
@@ -211,7 +244,7 @@ var app = new Vue({
     console.log('Vue init:', this)
   }
 });
---> 
+-->
         </div>
       </div>
     </div>

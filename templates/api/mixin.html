@@ -11,7 +11,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>    <script src="/javascripts/vendor.js"></script>
 
   </head>
-  
+
   <body class="bg-lighter">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="/">Vue.js 練習手冊</a>
@@ -35,72 +35,81 @@
       <li class="nav-item">
         <a class="nav-link" href="/es6/let_const.html">ES6</a>
       </li>
-      
+
     </ul>
   </div>
 </nav>
     <div class="container my-5">
       <div class="row">
-        
+
           <div class="col-md-3">
-            
+
 <div>
   <h6 class="text-capitalize text-muted">api</h6>
-  
-    
+
+
       <a href="/api/vue_set.html"  class="btn btn-block btn-link">
         Vue 的資料與 Set
       </a>
-    
-  
-    
+
+
+
       <a href="/api/filter.html"  class="btn btn-block btn-link">
         Vue Filter
       </a>
-    
-  
-    
+
+
+
       <a href="/api/extend.html"  class="btn btn-block btn-link">
         Vue Extend
       </a>
-    
-  
-    
+
+
+
       <a href="/api/mixin.html"  class="btn btn-block btn-primary active">
         Vue Mixins
       </a>
-    
-  
-    
+
+
+
       <a href="/api/directive.html"  class="btn btn-block btn-link">
         自定義指令
       </a>
-    
-  
-    
+
+
+
       <a href="/api/use.html"  class="btn btn-block btn-link">
         使用外部套件
       </a>
-    
-  
+
+
 </div>
           </div>
-        
-        <div class="col-md-9 post">      
+
+        <div class="col-md-9 post">
           <!-- 練習開始 -->
           <h1 class="mt-0 text-muted">Mixins</h1>
-          
+
 <div class="alert alert-secondary">
   <ol class="mb-0">
     <li>請跟隨課程完成此章節。</li>
   </ol>
 </div>
 
+
+
+
+
+
+
+
 <div id="app">
   <table class="table">
     <tbody>
-      <tr is="row-component" v-for="(item, key) in data" 
+      <tr is="row-component" v-for="(item, key) in data"
         :item="item" :key="key"></tr>
+      <tr is="row-component-two" v-for="(item, key) in data"
+          :item="item" ></tr>
     </tbody>
   </table>
 </div>
@@ -116,13 +125,7 @@
 <script>
 // mixin 是多個混合的概念
 
-Vue.component('row-component', {
-  props: ['item'],
-  data: function() {
-    return {
-      data: {},
-    }
-  },
+var mixinFilter = {
   template: '#row-component',
   filters: {
     dollarSign: function (n) {
@@ -130,13 +133,36 @@ Vue.component('row-component', {
     },
     currency: function(n) {
       return n.toFixed(2).replace(/./g, function(c, i, a) {
-          return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+        return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
       });
     }
-  },
-  mounted () {
+  }
+};
+
+var mixinMounted = {
+  mounted() {
     console.log('這段是 Mixin 產生')
   }
+};
+
+Vue.component('row-component', {
+  props: ['item'],
+  data: function() {
+    return {
+      data: {},
+    }
+  },
+  mixins: [mixinFilter, mixinMounted],
+});
+
+Vue.component('row-component-two', {
+  props: ['item'],
+  data: function () {
+    return {
+      data: 'Twp'
+    }
+  },
+  mixins: [mixinFilter, mixinMounted],
 });
 
 
@@ -172,7 +198,7 @@ var app = new Vue({
 });
 </script>
 
-<!-- 
+<!--
 var mixinFilter = {
   template: '#row-component',
   filters: {
@@ -208,7 +234,7 @@ Vue.component('row-component', {
   template: '#row-component',
   mixins: [mixinFilter, mixinMounted]
 });
---> 
+-->
         </div>
       </div>
     </div>
