@@ -49,3 +49,85 @@ $ npm run dev
 
 - /build/webpack.*.conf.js
 - /config/*.js
+
+## 安裝套件在 Vue Webpack 中
+
+- Bootstrap
+- vue-axios
+
+### Bootstrap
+
+```shell
+$ npm i bootstrap node-sass sass-loader --save
+```
+
+App.vue：
+
+```vue
+<style lang="scss">
+  @import "~bootstrap/scss/bootstrap";
+</style>
+```
+
+然後看 HelloWorld.vue 元件：
+
+```vue
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1, h2 {
+  color: red;
+  font-weight: normal;
+}
+```
+
+scoped 是限制在這個 vue 元件內的 style。
+
+### vue-axios
+
+```shell
+$ npm i axios vue-axios --save
+```
+
+And in your entry file:
+
+```javascript
+// main.js
+
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from 'vue'
+import axios from 'axios' // 主要 AJAX 套件
+import VueAxios from 'vue-axios' // 將它轉回 Vue 套件，就可用 this 方法叫用
+import App from './App'
+
+Vue.use(VueAxios, axios);
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  components: { App },
+  template: '<App/>'
+})
+```
+
+```javascript
+// App.vue
+
+<script>
+import HelloWorld from './components/HelloWorld'
+
+export default {
+  name: 'App',
+  components: {
+    HelloWorld
+  },
+  created() { // 元件創立時候
+    this.$http.get('https://randomuser.me/api/')
+      .then(res => {
+        console.log(res.data);
+      })
+  }
+}
+</script>
+```
