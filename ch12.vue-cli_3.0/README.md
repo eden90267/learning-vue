@@ -60,3 +60,48 @@ $ vue create vue-3-record
 - import 的 .vue 在 cli 3.0 不能省略
 - 要寫 scss 放在 src/assets 裡面
 
+## 環境變數的設定
+
+開發與正式環境的 api 路徑有所不同時，參考[官網](https://cli.vuejs.org/zh/guide/mode-and-env.html#%E6%A8%A1%E5%BC%8F)
+
+```
+# .env
+VUE_APP_SECRET=secret
+```
+
+要加前面 VUE_APP 前綴 src 裡面的檔案才可以使用這個變數。
+
+有其他環境的需求：
+
+1. 創建 `.env.{{stage}}`
+
+  ```
+  // .env.kk
+  VUE_APP_API=http://localhost
+  ```
+
+2. package.json 的 script 加上 `--mode {{stage}}` 來執行
+
+  ```json
+  {
+    //...
+    "scripts": {
+      "serve": "vue-cli-service serve --mode kk",
+      "build": "vue-cli-service build",
+      "lint": "vue-cli-service lint"
+    },
+    //...
+  }
+  ```
+
+- .env.development 是預設的 `npm run serve` 環境變數名稱，可不需加入 `--mode development`
+- .env.production 是預設的 `npm run build` 環境變數名稱，可不需加入 `--mode production`
+- .env 權重最低
+
+## 使用 GUI 介面創建專案
+
+```shell
+$ vue ui
+```
+
+## CLI 2.0 專案搬移到 3.0 實際演練
