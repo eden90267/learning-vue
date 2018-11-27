@@ -105,3 +105,29 @@ $ vue ui
 ```
 
 ## CLI 2.0 專案搬移到 3.0 實際演練
+
+## 使用 Vue Cli 快速創建原型
+
+透過 webpack 針對單一 .vue 做編譯，針對小型專案或只要做雛形的時候使用
+
+```shell
+$ npm i -g @vue/cli-service-global
+```
+
+就可在全域環境使用 `vue serve` 來編譯 .vue 的檔案
+
+```shell
+$ vue serve index.vue
+```
+
+就可 http://localhost:8080/ 運行起來
+
+也可編譯打包出來：
+
+```shell
+$ vue build index.vue
+```
+
+就會產生 dist 資料夾
+
+可透過上述功能快速產生原型開發
