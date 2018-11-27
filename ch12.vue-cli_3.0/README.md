@@ -42,6 +42,21 @@ $ vue create vue-3-record
 
 ## 資料夾結構說明
 
+### 結構：
 
+- src/
+  - assets/
+  - components/
+  - App.vue
+  - main.js
+- public/
+  - favicon.ico
+  - index.html
 
+### 重點說明：
+
+- 這版開始沒有一堆 webpack 設定檔，也不希望你去調整，都在 node_modules @vue 裡面
+- src：都會編譯的資料夾；不想要編譯就放去 public 裡面
+- import 的 .vue 在 cli 3.0 不能省略
+- 要寫 scss 放在 src/assets 裡面
 
